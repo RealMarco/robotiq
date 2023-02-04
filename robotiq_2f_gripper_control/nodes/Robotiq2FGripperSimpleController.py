@@ -43,7 +43,7 @@ This serves as an example for publishing messages on the 'Robotiq2FGripperRobotO
 
 import roslib; roslib.load_manifest('robotiq_2f_gripper_control')
 import rospy
-from robotiq_2f_gripper_control.msg import _Robotiq2FGripper_robot_output  as outputMsg
+from robotiq_2f_gripper_control.msg import _Robotiq2FGripper_robot_output  as outputMsg # ... Robotiq2FGripper_robot_output as .. 
 from time import sleep
 
 
@@ -54,7 +54,7 @@ def genCommand(char, command):
         command = outputMsg.Robotiq2FGripper_robot_output();
         command.rACT = 1
         command.rGTO = 1
-        command.rSP  = 255
+        command.rSP  = 255 # 255 is not the actual figure and the data is stored in 8 bits, so the scale is 0-255 
         command.rFR  = 150
 
     if char == 'r':
@@ -62,15 +62,15 @@ def genCommand(char, command):
         command.rACT = 0
 
     if char == 'c':
-        command.rPR = 255
+        command.rPR = 255 # Close the gripper
 
     if char == 'o':
-        command.rPR = 0   
+        command.rPR = 0 # Open the gripper
 
     #If the command entered is a int, assign this value to rPRA
     try: 
-        command.rPR = int(char)
-        if command.rPR > 255:
+        command.rPR = int(char) # '(0-255): Go to that position\n'
+        if command.rPR > 255:   # rPR represents the Position of Fingers (0-255, open-close)
             command.rPR = 255
         if command.rPR < 0:
             command.rPR = 0
@@ -102,18 +102,19 @@ def genCommand(char, command):
         
 
 def askForCommand(command):
-    """Ask the user for a command to send to the gripper."""    
+    """Ask the user to input a command to send to the gripper."""    
 
     currentCommand  = 'Simple 2F Gripper Controller\n-----\nCurrent command:'
-    currentCommand += '  rACT = '  + str(command.rACT)
-    currentCommand += ', rGTO = '  + str(command.rGTO)
+    currentCommand += '  rACT = '  + str(command.rACT) # Activate
+    currentCommand += ', rGTO = '  + str(command.rGTO) # Go to position request
     currentCommand += ', rATR = '  + str(command.rATR)
-    currentCommand += ', rPR = '   + str(command.rPR )
-    currentCommand += ', rSP = '   + str(command.rSP )
-    currentCommand += ', rFR = '   + str(command.rFR )
+    currentCommand += ', rPR = '   + str(command.rPR ) # Position Request
+    currentCommand += ', rSP = '   + str(command.rSP ) # Speed
+    currentCommand += ', rFR = '   + str(command.rFR ) # Force
 
 
-    print currentCommand
+    print(currentCommand)
+    # print currentCommand # python2
 
     strAskForCommand  = '-----\nAvailable commands\n\n'
     strAskForCommand += 'r: Reset\n'
@@ -128,7 +129,8 @@ def askForCommand(command):
     
     strAskForCommand += '-->'
 
-    return raw_input(strAskForCommand)
+    # return raw_input(strAskForCommand) # python2
+    return input(strAskForCommand)
 
 def publisher():
     """Main loop which requests new commands and publish them on the Robotiq2FGripperRobotOutput topic."""
@@ -138,11 +140,11 @@ def publisher():
 
     command = outputMsg.Robotiq2FGripper_robot_output();
 
-    while not rospy.is_shutdown():
+    while not rospy.is_shutdown(): # waitting for command recurrently
 
-        command = genCommand(askForCommand(command), command)            
+        command = genCommand(askForCommand(command), command)  # wait for the user to enter the command      
         
-        pub.publish(command)
+        pub.publish(command) # publish the Robotiq2FGripper_robot_output.msg with data such as rACT, rGTO
 
         rospy.sleep(0.1)
                         

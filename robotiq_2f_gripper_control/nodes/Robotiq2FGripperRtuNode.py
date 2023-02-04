@@ -57,7 +57,7 @@ def mainLoop(device):
     gripper.client = robotiq_modbus_rtu.comModbusRtu.communication()
 
     #We connect to the address received as an argument
-    gripper.client.connectToDevice(device)
+    gripper.client.connectToDevice(device) # local address/ device ID
 
     rospy.init_node('robotiq2FGripper')
 
@@ -86,5 +86,7 @@ def mainLoop(device):
             
 if __name__ == '__main__':
     try:
+        # input device ID like /dev/ttyUSB0 in the commander, an example:
+        # $ rosrun robotiq_2f_gripper_control Robotiq2FGripperRtuNode.py /dev/ttyUSB0
         mainLoop(sys.argv[1])
     except rospy.ROSInterruptException: pass

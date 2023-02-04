@@ -36,7 +36,8 @@
 """@package docstring
 Module baseRobotiq2FGripper: defines a base class for handling command and status of the Robotiq 2F gripper.
 
-After being instanciated, a 'client' member must be added to the object. This client depends on the communication protocol used by the Gripper. As an example, the ROS node 'Robotiq2FGripperTcpNode.py' instanciate a robotiqbaseRobotiq2FGripper and adds a client defined in the module comModbusTcp.
+After being instanciated, a 'client' member must be added to the object. This client depends on the communication protocol used by the Gripper. 
+As an example, the ROS node 'Robotiq2FGripperTcpNode.py' instanciate a robotiqbaseRobotiq2FGripper and adds a client defined in the module comModbusTcp.
 """
 
 from   robotiq_2f_gripper_control.msg import _Robotiq2FGripper_robot_input  as inputMsg
@@ -50,42 +51,43 @@ class robotiqbaseRobotiq2FGripper:
         #Initiate output message as an empty list
         self.message = []
 
-        #Note: after the instantiation, a ".client" member must be added to the object
+        #TODO Note: after the instantiation, a ".client" member must be added to the object
+        #see examples in Robotiq2FGripperTcpNode.py and Robotiq2FGripperRtuNode.py
 
     def verifyCommand(self, command):
         """Function to verify that the value of each variable satisfy its limits."""
     	   	
    	#Verify that each variable is in its correct range
-   	command.rACT = max(0, command.rACT)
-   	command.rACT = min(1, command.rACT)
-   	
-   	command.rGTO = max(0, command.rGTO)
-   	command.rGTO = min(1, command.rGTO)
-
-   	command.rATR = max(0, command.rATR)
-   	command.rATR = min(1, command.rATR)
-   	
-   	command.rPR  = max(0,   command.rPR)
-   	command.rPR  = min(255, command.rPR)   	
-
-   	command.rSP  = max(0,   command.rSP)
-   	command.rSP  = min(255, command.rSP)   	
-
-   	command.rFR  = max(0,   command.rFR)
-   	command.rFR  = min(255, command.rFR) 
-   	
-   	#Return the modified command
-   	return command
+        command.rACT = max(0, command.rACT)
+        command.rACT = min(1, command.rACT)
+       	
+        command.rGTO = max(0, command.rGTO)
+        command.rGTO = min(1, command.rGTO)
+    
+        command.rATR = max(0, command.rATR)
+        command.rATR = min(1, command.rATR)
+       	
+        command.rPR  = max(0,   command.rPR)
+        command.rPR  = min(255, command.rPR)   	
+    
+        command.rSP  = max(0,   command.rSP)
+        command.rSP  = min(255, command.rSP)   	
+    
+        command.rFR  = max(0,   command.rFR)
+        command.rFR  = min(255, command.rFR) 
+       	
+       	#Return the modified command
+        return command
 
     def refreshCommand(self, command):
         """Function to update the command which will be sent during the next sendCommand() call."""
     
 	#Limit the value of each variable
-    	command = self.verifyCommand(command)
-
+        command = self.verifyCommand(command)
+        
         #Initiate command as an empty list
         self.message = []
-
+        
         #Build the command with each output variable
         #To-Do: add verification that all variables are in their authorized range
         self.message.append(command.rACT + (command.rGTO << 3) + (command.rATR << 4))

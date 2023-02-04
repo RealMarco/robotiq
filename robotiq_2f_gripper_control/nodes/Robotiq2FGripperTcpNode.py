@@ -54,17 +54,17 @@ def mainLoop(address):
     
     #Gripper is a 2F with a TCP connection
     gripper = robotiq_2f_gripper_control.baseRobotiq2FGripper.robotiqbaseRobotiq2FGripper()
-    gripper.client = robotiq_modbus_tcp.comModbusTcp.communication()
+    gripper.client = robotiq_modbus_tcp.comModbusTcp.communication() # added a .client to the object after instantiation
 
     #We connect to the address received as an argument
-    gripper.client.connectToDevice(address)
+    gripper.client.connectToDevice(address) # network/emote address 
 
     rospy.init_node('robotiq2FGripper')
 
-    #The Gripper status is published on the topic named 'Robotiq2FGripperRobotInput'
+    #The Gripper status is published on the topic named 'Robotiq2FGripperRobotInput' subscribed by Listener code
     pub = rospy.Publisher('Robotiq2FGripperRobotInput', inputMsg.Robotiq2FGripper_robot_input)
 
-    #The Gripper command is received from the topic named 'Robotiq2FGripperRobotOutput'
+    #The Gripper command is received from the topic named 'Robotiq2FGripperRobotOutput' published by control code
     rospy.Subscriber('Robotiq2FGripperRobotOutput', outputMsg.Robotiq2FGripper_robot_output, gripper.refreshCommand)
     
 
@@ -78,8 +78,8 @@ def mainLoop(address):
       #Wait a little
       rospy.sleep(0.05)
 
-      #Send the most recent command
-      gripper.sendCommand()
+      #Send the most recent command (to the robot)
+      gripper.sendCommand()  #  self.client.sendCommand(self.message)
 
       #Wait a little
       rospy.sleep(0.05)
@@ -87,5 +87,6 @@ def mainLoop(address):
 if __name__ == '__main__':
     try:
         #TODO: Add verification that the argument is an IP address
+        # An example: $ rosrun robotiq_3f_gripper_control Robotiq3FGripperTcpNode.py 192.168.1.11 
         mainLoop(sys.argv[1])
     except rospy.ROSInterruptException: pass
