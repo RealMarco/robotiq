@@ -1,4 +1,10 @@
 # Robotiq
+## Modification by Marco
+The original robotiq/robotiq_2f_gripper_control package is written in python2, I just modified few lines to make it work for python3. The original lines are remarked as # python2. The modified files include   
+nodes/Robotiq2FGripperSimpleController.py,  
+nodes/Robotiq2FGripperStatusListener.py  
+src/robotiq_2f_gripper_control/robotiq_2f_gripper_ctrl.py  
+src/robotiq_2f_gripper_control/baseRobotiq2FGripper.py  
 
 ## Status
 
